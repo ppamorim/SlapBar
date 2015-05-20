@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="dragger_layout">
+    <attr name="drag_limit" format="float"/>
+    <attr name="drag_view_id" format="reference"/>
+  </declare-styleable>
+</resources>
