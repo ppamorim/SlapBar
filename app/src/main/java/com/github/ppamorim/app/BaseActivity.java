@@ -43,6 +43,6 @@ public class BaseActivity extends AbstractActivity {
   @Override protected void onPostCreate(Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
     simpleSlapBar = new SimpleSlapBar(this);
-    simpleSlapBar.initializeView();
+    simpleSlapBar.height(300).initializeView();
   }
 }
