@@ -23,6 +23,8 @@ import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import com.github.ppamorim.slapbar.R;
 import com.nineoldandroids.view.ViewHelper;
@@ -41,6 +43,7 @@ public class SlapBar extends FrameLayout {
   private static final float DEFAULT_DRAG_LIMIT = 0.5f;
   private static final float SENSITIVITY = 1.0f;
 
+  private boolean isAnimationRunning;
   private int activePointerId = INVALID_POINTER;
   private float horizontalDragRange;
   private float dragLimit;
@@ -50,6 +53,7 @@ public class SlapBar extends FrameLayout {
 
   private SlapBarHelperCallback flapBarHelperCallback;
   private ViewDragHelper dragHelper;
+  private SlideHelper slideHelper;
 
   public SlapBar(Context context) {
     super(context);
@@ -68,9 +72,11 @@ public class SlapBar extends FrameLayout {
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     if (!isInEditMode()) {
+      setVisibility(GONE);
       mapGUI(attributes);
       attributes.recycle();
       configDragViewHelper();
+      configSlideHelper();
     }
   }
 
@@ -108,7 +114,7 @@ public class SlapBar extends FrameLayout {
   }
 
   @Override public void computeScroll() {
-    if (!isInEditMode() && dragHelper.continueSettling(true)) {
+    if (!isInEditMode() && dragHelper != null && dragHelper.continueSettling(true)) {
       ViewCompat.postInvalidateOnAnimation(this);
     }
   }
@@ -118,27 +124,42 @@ public class SlapBar extends FrameLayout {
     setHorizontalDragRange(width);
   }
 
-  private void initializeAttributes(AttributeSet attrs) {
-    TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.dragger_layout);
-    this.dragLimit = attributes.getFloat(R.styleable.dragger_layout_drag_limit,
-        DEFAULT_DRAG_LIMIT);
-    this.attributes = attributes;
+  public View getDragView() {
+    return dragView;
   }
 
-  private void mapGUI(TypedArray attributes) {
-    if (getChildCount() == 1) {
-      int dragViewId = attributes.getResourceId(
-          R.styleable.dragger_layout_drag_view_id, 0);
-      System.out.println("dragview ID: " + dragViewId);
-      dragView = findViewById(dragViewId);
-    } else {
-      throw new IllegalStateException("FlapBar must contains only one direct child");
+  public void setDragView(View dragView) {
+    this.dragView = dragView;
+  }
+
+  private void initializeAttributes(AttributeSet attrs) {
+    TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.dragger_layout);
+    if(attributes != null) {
+      this.dragLimit = attributes.getFloat(R.styleable.dragger_layout_drag_limit, DEFAULT_DRAG_LIMIT);
+      this.attributes = attributes;
     }
   }
 
-  private void configDragViewHelper() {
+  private void mapGUI(TypedArray attributes) {
+    if (getChildCount() > 1) {
+      throw new IllegalStateException("FlapBar must contains only one direct child");
+    }
+    if (attributes != null && dragView == null) {
+      int dragViewId = attributes.getResourceId(
+          R.styleable.dragger_layout_drag_view_id, 0);
+      dragView = findViewById(dragViewId);
+    }
+  }
+
+  public void configDragViewHelper() {
     flapBarHelperCallback = new SlapBarHelperCallback(this, dragView);
     dragHelper = ViewDragHelper.create(this, SENSITIVITY, flapBarHelperCallback);
+  }
+
+  public void configSlideHelper() {
+    if(slideHelper == null) {
+      slideHelper = new SlideHelper(getContext(), this);
+    }
   }
 
   private boolean smoothSlideTo(View view, int x, int y) {
@@ -201,6 +222,26 @@ public class SlapBar extends FrameLayout {
 
   public void moveToCenter() {
     smoothSlideTo(dragView, 0, 0);
+  }
+
+  public void show(int duration) {
+    if(!isAnimationRunning) {
+      isAnimationRunning = true;
+      showToInfinite();
+      postDelayed(new Runnable() {
+        @Override public void run() {
+          slideHelper.slideOut();
+        }
+      }, duration);
+    }
+  }
+
+  public void showToInfinite() {
+    slideHelper.slideIn();
+  }
+
+  public void resetAnimation() {
+    isAnimationRunning = false;
   }
 
 }

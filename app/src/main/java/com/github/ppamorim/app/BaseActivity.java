@@ -15,20 +15,34 @@
 */
 package com.github.ppamorim.app;
 
+import android.os.Bundle;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import com.github.ppamorim.SlapBar;
+import com.github.ppamorim.SlapDuration;
+import com.github.ppamorim.layout.SimpleSlapBar;
 
 public class BaseActivity extends AbstractActivity {
 
-  @InjectView(R.id.slap_bar) SlapBar slapBar;
+  SimpleSlapBar simpleSlapBar;
 
   @OnClick(R.id.center_slap) void onCenterClick() {
-    slapBar.moveToCenter();
+    simpleSlapBar.show(SlapDuration.SHORT);
+  }
+
+  @OnLongClick(R.id.center_slap) boolean onCenterLongClick() {
+    simpleSlapBar.moveToCenter();
+    return true;
   }
 
   @Override protected int getLayoutResourceId() {
     return R.layout.activity_base;
   }
 
+  @Override protected void onPostCreate(Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
+    simpleSlapBar = new SimpleSlapBar(this);
+    simpleSlapBar.initializeView();
+  }
 }
