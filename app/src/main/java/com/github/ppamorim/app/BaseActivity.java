@@ -16,15 +16,17 @@
 package com.github.ppamorim.app;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import com.github.ppamorim.SlapDuration;
 import com.github.ppamorim.layout.AbstractSlapBar;
+import com.github.ppamorim.layout.ButtonSlapBar;
 import com.github.ppamorim.layout.SingleSlapBar;
 
 public class BaseActivity extends AbstractActivity {
 
-  private SingleSlapBar singleSlapBar;
+  private ButtonSlapBar singleSlapBar;
 
   @OnClick(R.id.center_slap) void onCenterClick() {
     singleSlapBar.showWithDelay(SlapDuration.SHORT);
@@ -41,11 +43,13 @@ public class BaseActivity extends AbstractActivity {
 
   @Override protected void onPostCreate(Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
-    singleSlapBar = new SingleSlapBar(this);
+    singleSlapBar = new ButtonSlapBar(this);
     singleSlapBar.config()
+        .buttonText("OK")
         .backgroundColor(R.color.link_text_material_dark)
-        .text("teste")
-        .textPadding(12, 12, 12, 12)
+        .text("test")
+        .textGravity(Gravity.CENTER_HORIZONTAL)
+        .textPadding(16, 16, 16, 16)
         .textColor(R.color.blue)
         .initializeView();
   }

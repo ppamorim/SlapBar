@@ -38,11 +38,14 @@ public class SingleSlapBar extends AbstractSlapBar {
   }
 
   public SingleSlapBar textPadding(int leftDp, int topDp, int rightDp, int bottomDp) {
-    textView.setPadding(
-        ViewUtil.dpToPx(getResources(), leftDp),
-        ViewUtil.dpToPx(getResources(), topDp),
-        ViewUtil.dpToPx(getResources(), rightDp),
+    textView.setPadding(ViewUtil.dpToPx(getResources(), leftDp),
+        ViewUtil.dpToPx(getResources(), topDp), ViewUtil.dpToPx(getResources(), rightDp),
         ViewUtil.dpToPx(getResources(), bottomDp));
+    return this;
+  }
+
+  public SingleSlapBar textGravity(int gravity) {
+    textView.setGravity(gravity);
     return this;
   }
 
