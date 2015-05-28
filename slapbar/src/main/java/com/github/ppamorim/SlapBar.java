@@ -224,20 +224,30 @@ public class SlapBar extends FrameLayout {
     smoothSlideTo(dragView, 0, 0);
   }
 
-  public void show(int duration) {
+  public void show() {
+    slideHelper.slideIn();
+  }
+
+  public void showWithDelay(int duration) {
     if(!isAnimationRunning) {
       isAnimationRunning = true;
-      showToInfinite();
-      postDelayed(new Runnable() {
-        @Override public void run() {
-          slideHelper.slideOut();
-        }
-      }, duration);
+      show();
+      if(duration != SlapDuration.INFINITE) {
+        hideWithDelay(duration);
+      }
     }
   }
 
-  public void showToInfinite() {
-    slideHelper.slideIn();
+  public void hide() {
+    slideHelper.slideOut();
+  }
+
+  public void hideWithDelay(int duration) {
+    postDelayed(new Runnable() {
+      @Override public void run() {
+        hide();
+      }
+    }, duration);
   }
 
   public void resetAnimation() {

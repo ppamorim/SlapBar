@@ -16,23 +16,22 @@
 package com.github.ppamorim.app;
 
 import android.os.Bundle;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
-import com.github.ppamorim.SlapBar;
 import com.github.ppamorim.SlapDuration;
-import com.github.ppamorim.layout.SimpleSlapBar;
+import com.github.ppamorim.layout.AbstractSlapBar;
+import com.github.ppamorim.layout.SingleSlapBar;
 
 public class BaseActivity extends AbstractActivity {
 
-  SimpleSlapBar simpleSlapBar;
+  private SingleSlapBar singleSlapBar;
 
   @OnClick(R.id.center_slap) void onCenterClick() {
-    simpleSlapBar.show(SlapDuration.SHORT);
+    singleSlapBar.showWithDelay(SlapDuration.SHORT);
   }
 
   @OnLongClick(R.id.center_slap) boolean onCenterLongClick() {
-    simpleSlapBar.moveToCenter();
+    singleSlapBar.moveToCenter();
     return true;
   }
 
@@ -42,7 +41,12 @@ public class BaseActivity extends AbstractActivity {
 
   @Override protected void onPostCreate(Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
-    simpleSlapBar = new SimpleSlapBar(this);
-    simpleSlapBar.height(300).initializeView();
+    singleSlapBar = new SingleSlapBar(this);
+    singleSlapBar.config()
+        .backgroundColor(R.color.link_text_material_dark)
+        .text("teste")
+        .textPadding(12, 12, 12, 12)
+        .textColor(R.color.blue)
+        .initializeView();
   }
 }
