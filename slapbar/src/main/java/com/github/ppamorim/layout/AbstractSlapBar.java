@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import com.github.ppamorim.SlapBar;
+import com.github.ppamorim.SlapBarCallback;
 
 public abstract class AbstractSlapBar extends SlapBar {
 
@@ -37,6 +38,21 @@ public abstract class AbstractSlapBar extends SlapBar {
     return slapBar;
   }
 
+  public AbstractSlapBar setSlapBarCallback(SlapBarCallback slapBarCallback) {
+    this.slapBarCallback = slapBarCallback;
+    return this;
+  }
+
+  public AbstractSlapBar setTension(double tension) {
+    slideHelper.setTension(tension);
+    return this;
+  }
+
+  public AbstractSlapBar setFriction(double friction) {
+    slideHelper.setFriction(friction);
+    return this;
+  }
+
   public AbstractSlapBar width(int width) {
     this.width = width;
     return this;
@@ -48,7 +64,6 @@ public abstract class AbstractSlapBar extends SlapBar {
   }
 
   public AbstractSlapBar initializeView() {
-    setVisibility(GONE);
     checkSizes();
     FrameLayout.LayoutParams layoutParams = new LayoutParams(width, height);
     layoutParams.gravity = Gravity.BOTTOM;

@@ -23,11 +23,8 @@ import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import com.github.ppamorim.slapbar.R;
-import com.nineoldandroids.view.ViewHelper;
 
 /**
  *
@@ -43,7 +40,6 @@ public class SlapBar extends FrameLayout {
   private static final float DEFAULT_DRAG_LIMIT = 0.5f;
   private static final float SENSITIVITY = 1.0f;
 
-  private boolean isAnimationRunning;
   private int activePointerId = INVALID_POINTER;
   private float horizontalDragRange;
   private float dragLimit;
@@ -53,7 +49,8 @@ public class SlapBar extends FrameLayout {
 
   private SlapBarHelperCallback flapBarHelperCallback;
   private ViewDragHelper dragHelper;
-  private SlideHelper slideHelper;
+  public SlideHelper slideHelper;
+  public SlapBarCallback slapBarCallback;
 
   public SlapBar(Context context) {
     super(context);
@@ -72,12 +69,21 @@ public class SlapBar extends FrameLayout {
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     if (!isInEditMode()) {
-      setVisibility(GONE);
       mapGUI(attributes);
       attributes.recycle();
       configDragViewHelper();
       configSlideHelper();
     }
+  }
+
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    slideHelper.onAttachedToWindow();
+  }
+
+  @Override protected void onDetachedFromWindow() {
+    slideHelper.onDetachedFromWindow();
+    super.onDetachedFromWindow();
   }
 
   @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -109,8 +115,7 @@ public class SlapBar extends FrameLayout {
       return false;
     }
     dragHelper.processTouchEvent(ev);
-    boolean isDragViewHit = isViewHit(dragView, (int) ev.getX(), (int) ev.getY());
-    return isDragViewHit;
+    return isViewHit(dragView, (int) ev.getX(), (int) ev.getY());
   }
 
   @Override public void computeScroll() {
@@ -159,6 +164,7 @@ public class SlapBar extends FrameLayout {
   public void configSlideHelper() {
     if(slideHelper == null) {
       slideHelper = new SlideHelper(getContext(), this);
+      slideHelper.setCallback(slapBarPositionCallback);
     }
   }
 
@@ -192,7 +198,7 @@ public class SlapBar extends FrameLayout {
   }
 
   public void verifyPosition() {
-    float xValue = ViewHelper.getX(dragView);
+    float xValue = ViewCompat.getX(dragView);
     if(isDragViewAboveTheMiddle(xValue, dragView.getWidth())) {
       if(xValue > 0) {
         closeToRight();
@@ -224,16 +230,12 @@ public class SlapBar extends FrameLayout {
     smoothSlideTo(dragView, 0, 0);
   }
 
-  public void show() {
-    slideHelper.slideIn();
-  }
-
-  public void showWithDelay(int duration) {
-    if(!isAnimationRunning) {
-      isAnimationRunning = true;
-      show();
-      if(duration != SlapDuration.INFINITE) {
-        hideWithDelay(duration);
+  public void show(int duration) {
+    if(slideHelper.canAnimate()) {
+      slideHelper.setCanAnimate(false);
+      slideHelper.slideIn();
+      if (duration != SlapDuration.INFINITE) {
+        hide(duration);
       }
     }
   }
@@ -242,7 +244,7 @@ public class SlapBar extends FrameLayout {
     slideHelper.slideOut();
   }
 
-  public void hideWithDelay(int duration) {
+  public void hide(int duration) {
     postDelayed(new Runnable() {
       @Override public void run() {
         hide();
@@ -250,8 +252,27 @@ public class SlapBar extends FrameLayout {
     }, duration);
   }
 
-  public void resetAnimation() {
-    isAnimationRunning = false;
-  }
+  private SlapBarPositionCallback slapBarPositionCallback = new SlapBarPositionCallback() {
+    @Override public double endPosition() {
+      return dragView.getHeight();
+    }
+
+    @Override public void updatePosition(float yValue) {
+      slapBarCallback.updatePosition(yValue);
+      ViewCompat.setTranslationY(getDragView(), yValue);
+    }
+
+    @Override public void onProgress(double value) {
+
+    }
+
+    @Override public void notifyShown() {
+      slapBarCallback.notifyShown();
+    }
+
+    @Override public void notifyHide() {
+      slapBarCallback.notifyHide();
+    }
+  };
 
 }

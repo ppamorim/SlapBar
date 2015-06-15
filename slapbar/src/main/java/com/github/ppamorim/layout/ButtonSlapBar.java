@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.TextView;
+import com.github.ppamorim.SlapBarCallback;
 import com.github.ppamorim.Utils.ViewUtil;
 import com.github.ppamorim.slapbar.R;
 

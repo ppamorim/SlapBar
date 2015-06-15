@@ -16,9 +16,14 @@
 package com.github.ppamorim.app;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
+import android.widget.TextView;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+import com.github.ppamorim.SlapBar;
+import com.github.ppamorim.SlapBarCallback;
 import com.github.ppamorim.SlapDuration;
 import com.github.ppamorim.layout.AbstractSlapBar;
 import com.github.ppamorim.layout.ButtonSlapBar;
@@ -26,10 +31,12 @@ import com.github.ppamorim.layout.SingleSlapBar;
 
 public class BaseActivity extends AbstractActivity {
 
-  private ButtonSlapBar singleSlapBar;
+  private SingleSlapBar singleSlapBar;
+
+  @InjectView(R.id.center_slap) TextView centerSlap;
 
   @OnClick(R.id.center_slap) void onCenterClick() {
-    singleSlapBar.showWithDelay(SlapDuration.SHORT);
+    singleSlapBar.show(SlapDuration.SHORT);
   }
 
   @OnLongClick(R.id.center_slap) boolean onCenterLongClick() {
@@ -43,14 +50,32 @@ public class BaseActivity extends AbstractActivity {
 
   @Override protected void onPostCreate(Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
-    singleSlapBar = new ButtonSlapBar(this);
+    singleSlapBar = new SingleSlapBar(this);
     singleSlapBar.config()
-        .buttonText("OK")
-        .backgroundColor(R.color.link_text_material_dark)
+        .backgroundColor(getResources().getColor(R.color.black_gray))
         .text("test")
-        .textGravity(Gravity.CENTER_HORIZONTAL)
+        .textGravity(Gravity.LEFT)
         .textPadding(16, 16, 16, 16)
         .textColor(R.color.blue)
+        .setTension(30)
+        .setFriction(2)
+        .setSlapBarCallback(slapBarCallback)
         .initializeView();
+
   }
+
+  private SlapBarCallback slapBarCallback = new SlapBarCallback() {
+    @Override public void updatePosition(float yValue) {
+      ViewCompat.setTranslationY(centerSlap, yValue);
+    }
+
+    @Override public void notifyShown() {
+
+    }
+
+    @Override public void notifyHide() {
+
+    }
+  };
+
 }
