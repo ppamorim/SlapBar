@@ -139,7 +139,7 @@ public class SlapBar extends FrameLayout {
 
   private void initializeAttributes(AttributeSet attrs) {
     TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.dragger_layout);
-    if(attributes != null) {
+    if (attributes != null) {
       this.dragLimit = attributes.getFloat(R.styleable.dragger_layout_drag_limit, DEFAULT_DRAG_LIMIT);
       this.attributes = attributes;
     }
@@ -162,7 +162,7 @@ public class SlapBar extends FrameLayout {
   }
 
   public void configSlideHelper() {
-    if(slideHelper == null) {
+    if (slideHelper == null) {
       slideHelper = new SlideHelper(getContext(), this);
       slideHelper.setCallback(slapBarPositionCallback);
     }
@@ -199,8 +199,8 @@ public class SlapBar extends FrameLayout {
 
   public void verifyPosition() {
     float xValue = ViewCompat.getX(dragView);
-    if(isDragViewAboveTheMiddle(xValue, dragView.getWidth())) {
-      if(xValue > 0) {
+    if (isDragViewAboveTheMiddle(xValue, dragView.getWidth())) {
+      if (xValue > 0) {
         closeToRight();
       } else {
         closeToLeft();
@@ -211,7 +211,7 @@ public class SlapBar extends FrameLayout {
   }
 
   private boolean isDragViewAboveTheMiddle(float xValue, int parentSize) {
-    if(xValue > 0) {
+    if (xValue > 0) {
       return parentSize < (xValue + (parentSize * dragLimit));
     } else {
       return parentSize < (-xValue + (parentSize * dragLimit));
@@ -231,7 +231,7 @@ public class SlapBar extends FrameLayout {
   }
 
   public void show(int duration) {
-    if(slideHelper.canAnimate()) {
+    if (slideHelper.canAnimate()) {
       slideHelper.setCanAnimate(false);
       slideHelper.slideIn();
       if (duration != SlapDuration.INFINITE) {

@@ -28,7 +28,7 @@ public class SingleSlapBar extends AbstractSlapBar {
   }
 
   public SingleSlapBar config() {
-    textView = (TextView)getSlapBar().findViewById(R.id.text);
+    textView = (TextView) getSlapBar().findViewById(R.id.text);
     return this;
   }
 

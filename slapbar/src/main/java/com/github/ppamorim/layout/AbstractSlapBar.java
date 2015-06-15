@@ -75,10 +75,10 @@ public abstract class AbstractSlapBar extends SlapBar {
   }
 
   private void checkSizes() {
-    if(width <= 0) {
+    if (width <= 0) {
       width = LayoutParams.MATCH_PARENT;
     }
-    if(height <= 0) {
+    if (height <= 0) {
       height = LayoutParams.WRAP_CONTENT;
     }
   }
