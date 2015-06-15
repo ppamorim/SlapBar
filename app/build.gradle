@@ -1,4 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'checkstyle'
+
+dependencies {
+  compile project(':slapbar')
+  compile 'com.android.support:appcompat-v7:22.2.0'
+  compile 'com.jakewharton:butterknife:6.1.0'
+}
 
 android {
 
@@ -34,8 +41,10 @@ android {
 
 }
 
-dependencies {
-  compile project(':slapbar')
-  compile 'com.android.support:appcompat-v7:22.2.0'
-  compile 'com.jakewharton:butterknife:6.1.0'
+task checkstyle(type: Checkstyle) {
+  configFile file('../config/checkstyle/checkstyle.xml')
+  source 'src/main/java'
+  include '**/*.java'
+  exclude '**/gen/**'
+  classpath = files()
 }

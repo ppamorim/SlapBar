@@ -1,4 +1,10 @@
 apply plugin: 'com.android.library'
+apply plugin: 'checkstyle'
+
+dependencies {
+  compile 'com.android.support:appcompat-v7:22.2.0'
+  compile 'com.facebook.rebound:rebound:0.3.8'
+}
 
 android {
 
@@ -23,7 +29,10 @@ android {
   }
 }
 
-dependencies {
-  compile 'com.android.support:appcompat-v7:22.2.0'
-  compile 'com.facebook.rebound:rebound:0.3.8'
+task checkstyle(type: Checkstyle) {
+  configFile file('../config/checkstyle/checkstyle.xml')
+  source 'src/main/java'
+  include '**/*.java'
+  exclude '**/gen/**'
+  classpath = files()
 }
