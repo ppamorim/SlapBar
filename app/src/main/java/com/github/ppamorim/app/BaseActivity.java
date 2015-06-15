@@ -22,11 +22,8 @@ import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
-import com.github.ppamorim.SlapBar;
 import com.github.ppamorim.SlapBarCallback;
 import com.github.ppamorim.SlapDuration;
-import com.github.ppamorim.layout.AbstractSlapBar;
-import com.github.ppamorim.layout.ButtonSlapBar;
 import com.github.ppamorim.layout.SingleSlapBar;
 
 public class BaseActivity extends AbstractActivity {
